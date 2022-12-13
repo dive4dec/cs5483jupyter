@@ -7,9 +7,10 @@ USER ${NB_UID}
 RUN pip install --quiet --no-cache-dir \
     'divewidgets' \
     'divemathjax3' \
-    'divemarkdownit' \
+    # 'divemarkdownit' \
     'otter-grader' \
     'jupyterlab-deck' \
+    'jupyterlab-myst' \
     && \
     fix-permissions "${CONDA_DIR}"
 
