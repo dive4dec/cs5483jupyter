@@ -11,8 +11,8 @@ RUN apt-get update --yes && \
     build-essential \
     # java
     # default-jdk \
-    openjdk-17-jdk \
-    openjdk-17-jre \
+    openjdk-11-jdk \
+    openjdk-11-jre \
     # python
     thonny \
     # python3-dev \

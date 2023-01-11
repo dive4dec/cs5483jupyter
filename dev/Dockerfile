@@ -49,6 +49,15 @@ RUN conda env create -p ${CONDA_DIR}/envs/jlite -f /tmp/dep/environment.yml && \
 #     && \
 #     fix-permissions "${CONDA_DIR}"
 
+#RUN jupyter labextension disable --level=sys_prefix nbgrader/create_assignment && \
+#    jupyter labextension disable --level=sys_prefix nbgrader/formgrader && \
+#    jupyter serverextension disable --sys-prefix nbgrader.server_extensions.formgrader && \
+#    jupyter labextension disable --level=sys_prefix nbgrader/formgrader && \
+#    jupyter serverextension disable --sys-prefix nbgrader.server_extensions.formgrader
+
+RUN jupyter labextension disable nbgrader/formgrader && \
+    jupyter labextension disable nbgrader/create-assignment && \
+    jupyter labextension disable nbgrader/course-list
 
 # RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader && \
 #     jupyter nbextension enable --sys-prefix --py nbgrader && \

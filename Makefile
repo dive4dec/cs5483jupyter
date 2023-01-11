@@ -4,7 +4,7 @@ activate_conda = source /opt/conda/bin/activate && conda activate jlite
 REGISTRY=localhost:32000
 # REGISTRY=chungc
 # version for tagging image for deployment
-VERSION=0.0.2
+VERSION=0.0.2c
 
 push-%:
 	docker tag "$*" "${REGISTRY}/$*:${VERSION}"
@@ -27,7 +27,7 @@ math:
 # jupyter-interface programming datamining dev cds;
 cs5483nb: scipy-nv
 	base=scipy-nv; i=0; \
-	for module in jupyter-interface datamining math programming remote-display dev; \
+	for module in jupyter-interface datamining math remote-display dev; \
 	do \
 	stage="cs5483nb$$((++i))_$$module"; \
 	docker build --build-arg BASE_CONTAINER="$$base" \
