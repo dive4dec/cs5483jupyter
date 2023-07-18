@@ -3,7 +3,7 @@ import nbformat as nbf
 import glob
 
 if __name__ == '__main__':
-    for fn in glob.glob("_output/files/*/*.ipynb"):
+    for fn in glob.glob("_output/files/**/*.ipynb", recursive=True):
         nb = nbf.read(fn, 4)
         nb['metadata']['kernelspec'] = {
             "name": "python",

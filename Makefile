@@ -4,7 +4,34 @@ activate_conda = source /opt/conda/bin/activate && conda activate jlite
 REGISTRY=localhost:32000
 # REGISTRY=chungc
 # version for tagging image for deployment
-VERSION=0.0.2c
+VERSION=0.0.2d
+
+python_version := 3.11
+
+nv:
+	docker build \
+		-t "nv" -f "nv/Dockerfile" .
+
+docker-stacks-foundation-nv: nv
+	docker build \
+		--build-arg ROOT_CONTAINER="nv" \
+		--build-arg PYTHON_VERSION="$(python_version)" \
+		-t "docker-stacks-foundation-nv" docker-stacks/docker-stacks-foundation
+
+base-notebook-nv: docker-stacks-foundation-nv
+	docker build \
+		--build-arg BASE_CONTAINER="docker-stacks-foundation-nv" \
+		-t "base-notebook-nv" docker-stacks/base-notebook
+
+minimal-notebook-nv: base-notebook-nv
+	docker build \
+		--build-arg BASE_CONTAINER="base-notebook-nv" \
+		-t "minimal-notebook-nv" docker-stacks/minimal-notebook
+
+scipy-notebook-nv: minimal-notebook-nv
+	docker build \
+		--build-arg BASE_CONTAINER="minimal-notebook-nv" \
+		-t "scipy-notebook-nv" docker-stacks/scipy-notebook
 
 push-%:
 	docker tag "$*" "${REGISTRY}/$*:${VERSION}"
@@ -26,15 +53,15 @@ math:
 
 # jupyter-interface programming datamining dev cds;
 cs5483nb: scipy-nv
-	base=scipy-nv; i=0; \
-	for module in jupyter-interface datamining math remote-display dev; \
+	base="scipy-nv:${VERSION}"; i=0; \
+	for module in jupyter-interface; \
 	do \
-	stage="cs5483nb$$((++i))_$$module"; \
+	stage="cs5483nb$$((++i))_$$module:${VERSION}"; \
 	docker build --build-arg BASE_CONTAINER="$$base" \
 		-t "$$stage" -f "$$module/Dockerfile" .; \
 	base="$$stage"; \
 	done; \
-	docker tag "$$stage" cs5483nb
+	docker tag "$$stage" "cs5483nb:${VERSION}"
 
 cs5483nbg: cs5483nb
 	cd cs5483-deploy/gpu && \
@@ -72,16 +99,16 @@ scipy-nv: nv
 	docker build \
 		--build-arg ROOT_CONTAINER="nv" \
 		--build-arg PYTHON_VERSION="3.10" \
-		-t "docker-stacks-foundation-nv" docker-stacks/docker-stacks-foundation
+		-t "docker-stacks-foundation-nv:${VERSION}" docker-stacks/docker-stacks-foundation
 	docker build \
-		--build-arg BASE_CONTAINER="docker-stacks-foundation-nv" \
-		-t "base-notebook-nv" docker-stacks/base-notebook
+		--build-arg BASE_CONTAINER="docker-stacks-foundation-nv:${VERSION}" \
+		-t "base-notebook-nv:${VERSION}" docker-stacks/base-notebook
 	docker build \
-		--build-arg BASE_CONTAINER="base-notebook-nv" \
-		-t "minimal-notebook-nv" docker-stacks/minimal-notebook
+		--build-arg BASE_CONTAINER="base-notebook-nv:${VERSION}" \
+		-t "minimal-notebook-nv:${VERSION}" docker-stacks/minimal-notebook
 	docker build \
-		--build-arg BASE_CONTAINER="minimal-notebook-nv" \
-		-t "scipy-nv" docker-stacks/scipy-notebook
+		--build-arg BASE_CONTAINER="minimal-notebook-nv:${VERSION}" \
+		-t "scipy-nv:${VERSION}" docker-stacks/scipy-notebook
 
 jl-source: jl-clean-source jl-build-source
 

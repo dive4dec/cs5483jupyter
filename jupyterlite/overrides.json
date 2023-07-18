@@ -1,7 +1,7 @@
 {
     "@jupyterlite/webrtc-docprovider:plugin": {
-      "disabled": false,
-      "roomPrefix": "cs1302",
+      "disabled": true,
+      "roomPrefix": "cs5483",
       "signalingUrls": [
         "wss://y-webrtc-signaling-eu.herokuapp.com",
         "wss://y-webrtc-signaling-us.herokuapp.com",

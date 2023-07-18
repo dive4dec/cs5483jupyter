@@ -5,11 +5,11 @@ FROM ${BASE_CONTAINER}
 USER root
 
 ### Desktop ###
-RUN wget -q "https://sourceforge.net/projects/turbovnc/files/3.0/turbovnc_3.0_amd64.deb/download" \
-    -O /tmp/turbovnc_3.0_amd64.deb && \
+RUN wget -q "https://sourceforge.net/projects/turbovnc/files/3.0.3/turbovnc_3.0.3_amd64.deb/download" \
+    -O /tmp/turbovnc_amd64.deb && \
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
-    /tmp/turbovnc_3.0_amd64.deb \
+    /tmp/turbovnc_amd64.deb \
     dbus-x11 \
     x11-utils \
     xfonts-base \
@@ -29,7 +29,7 @@ RUN wget -q "https://sourceforge.net/projects/turbovnc/files/3.0/turbovnc_3.0_am
     firefox \
     && \
     apt-get remove -y -q light-locker libllvm11 && \
-    rm /tmp/turbovnc_3.0_amd64.deb && \
+    rm /tmp/turbovnc_amd64.deb && \
     ln -s /opt/TurboVNC/bin/* /usr/local/bin/ && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -39,7 +39,7 @@ RUN apt-get update --yes && \
     curl \
     && \
     wget -q https://code-server.dev/install.sh -O /tmp/install.sh && \
-    sh /tmp/install.sh --version 4.5.1 && \
+    sh /tmp/install.sh --version 4.10.1 && \
     code-server --extensions-dir /usr/lib/code-server/lib/vscode/extensions --install-extension ms-python.python && \
     fix-permissions "${HOME}" && \
     rm -rf ~/.cache/code-server/ && \
@@ -56,18 +56,21 @@ USER ${NB_UID}
 
 
 RUN mamba install --quiet --yes \
-    'websockify=0.10.*' \
-    'jupyter-vscode-proxy=0.1.*' \
+    'websockify=0.11.*' \
+    'jupyter-vscode-proxy=0.2.*' \
     'ipydrawio=1.2.*' \
     'ipydrawio-export=1.2.*' \
     'ipydrawio-mathjax=1.2.*' \
+    'ipydrawio-widgets=1.2.*' \
     'jupyter-offlinenotebook=0.2.*' \
     'jupyterlab-system-monitor=0.8.*' \
     'jupyterlab-spellchecker=0.7.*' \
-    'jupytext=1.13.*' \
-    'jupyterlab-git=0.37.*' \
+    'jupytext=1.14.*' \
+    'jupyterlab-git=0.41.*' \
     'nbgitpuller=1.1.*' \
-    'retrolab=0.3.*' \
+    # 'retrolab=0.3.*' \
+    'jupyterlab-myst=1.1.*' \
+    'jupyterlab-deck=0.1.*' \
     && \
     pip install --quiet --no-cache-dir \
     'jupyter-desktop-server==0.1.*' \
@@ -76,24 +79,29 @@ RUN mamba install --quiet --yes \
     # 'jupyterlab-citation-manager==0.3.*' \
     'jupyter-www-proxy' \
     && \
+    pip install --quiet --no-cache-dir --pre 'notebook' \
+    && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
 
+RUN pip install --quiet --no-cache-dir 'divemathjax3' \
+    && \
+    fix-permissions "${CONDA_DIR}"
 
 # Jupyter-book
-RUN mamba install --quiet --yes \
-    'jupyter-book=0.12.*' \
-    'myst-nb==0.13.*' \
-    && \
-    pip install --quiet --no-cache-dir \
-    'sphinx-proof==0.1.*' \
-    && \
-    mamba clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}"
+# RUN mamba install --quiet --yes \
+#     'jupyter-book=0.12.*' \
+#     'myst-nb==0.13.*' \
+#     && \
+#     pip install --quiet --no-cache-dir \
+#     'sphinx-proof==0.1.*' \
+#     && \
+#     mamba clean --all -f -y && \
+#     fix-permissions "${CONDA_DIR}"
 
 COPY --chown=${NB_USER}:${NB_GID} jupyter-interface/condarc "${CONDA_DIR}/.condarc"
 
-# USER ${NB_USER}
+USER ${NB_USER}
 
 # Remote desktop customization
 COPY --chown=${NB_USER}:${NB_GID} jupyter-interface/jupyter_desktop_init.py /tmp/

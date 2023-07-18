@@ -10,11 +10,13 @@ ipydrawio-widgets
 jupyterlab-language-pack-zh-TW
 jupyterlab-language-pack-zh-CN
 ghp-import
-jupyterlab-deck
-jupyterlab-myst
+jupyterlab-deck<=0.1.3
+jupyterlab-myst<=0.1.7a5
+jupytext<=1.14.*
+
 
 # jupyterlite
-jupyterlite<=0.1.0b15
+jupyterlite<=0.1.0-beta
 # jupyterlite[contents] # jupyter_server for contents API indexing
 # jupyterlite[serve]    # tornado for better local previewing with `serve`
 # jupyterlite[piplite]  # pkginfo for reading wheel metadata for the pyolite kernel
@@ -22,9 +24,10 @@ jupyterlite<=0.1.0b15
 # jupyterlite[check]    # validate more data with jsonschema
 # jupyterlite[lab]      # a known-compatible jupyterlab (entails `contents`, `serve`, `check`)
 # jupyterlite-xeus-sqlite>=0.2.1  #==0.2.1
+libarchive-c
 
 # DIVE
-dive-jupyterlite-xeus-python
+# dive-jupyterlite-xeus-python
 jupyterlab_filesystem_access
 jupyterlab-webrtc-docprovider
 divewidgets

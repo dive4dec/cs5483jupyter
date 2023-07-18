@@ -10,7 +10,7 @@ RUN pip install --quiet --no-cache-dir \
     # 'divemarkdownit' \
     'otter-grader' \
     'jupyterlab-deck' \
-    'jupyterlab-myst' \
+    'jupyterlab-myst<=1.1.*' \
     && \
     fix-permissions "${CONDA_DIR}"
 
